@@ -210,6 +210,14 @@
   #preparar .enlace-resultado button { margin-top: 8px; background: #fff; color: var(--granate); border: 1px solid #fff; font-size: 13px; padding: 9px 18px; }
   #preparar .nota { font-size: 12.5px; color: #c8c8d0; margin: 10px 0 0; }
 
+  /* Panel colapsable en móvil */
+  @media (max-width: 700px) {
+    #preparar.colapsado > *:not(h2) { display: none !important; }
+    #preparar h2 { cursor: pointer; user-select: none; -webkit-user-select: none; }
+    #preparar h2::after { content: " ▼"; font-size: 13px; opacity: 0.65; }
+    #preparar.colapsado h2::after { content: " ▶"; }
+  }
+
   .sin-consentimiento-impresion { display: none; }
   @media print {
     body:not(.acepta) .hoja { display: none; }
@@ -1401,7 +1409,7 @@
     if (!datosAgenteOk(cfg)) return;
     try {
       const payload = btoa(unescape(encodeURIComponent(JSON.stringify(cfg))));
-      const base = location.origin + location.pathname;
+      const base = 'https://luisdelblanco.github.io/sm-cuestionarios/cuestionario_hogar.html';
       const url = base + '#cfg=' + payload;
       document.getElementById('enlace-url').value = url;
       document.getElementById('enlace-resultado').style.display = 'block';
@@ -1493,6 +1501,14 @@
   });
   if (!CFG.preparado) {
     document.getElementById('preparar').classList.remove('oculto');
+    // En móvil, colapsar el panel por defecto para no ocupar pantalla
+    if (window.matchMedia('(max-width: 700px)').matches) {
+      var prepEl = document.getElementById('preparar');
+      prepEl.classList.add('colapsado');
+      prepEl.querySelector('h2').addEventListener('click', function() {
+        prepEl.classList.toggle('colapsado');
+      });
+    }
     document.getElementById('p-idioma').addEventListener('change', function () { cambiarIdioma(this.value); });
   }
   aplicarConfig();
